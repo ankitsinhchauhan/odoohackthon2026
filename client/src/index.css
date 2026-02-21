@@ -1,68 +1,149 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
+@layer base {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    --background: 220 20% 10%;
+    --foreground: 210 20% 92%;
+
+    --card: 220 18% 13%;
+    --card-foreground: 210 20% 92%;
+
+    --popover: 220 18% 13%;
+    --popover-foreground: 210 20% 92%;
+
+    --primary: 38 92% 50%;
+    --primary-foreground: 220 20% 10%;
+
+    --secondary: 220 16% 18%;
+    --secondary-foreground: 210 20% 85%;
+
+    --muted: 220 14% 16%;
+    --muted-foreground: 215 15% 55%;
+
+    --accent: 200 80% 55%;
+    --accent-foreground: 220 20% 10%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 14% 20%;
+    --input: 220 14% 20%;
+    --ring: 38 92% 50%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 220 20% 8%;
+    --sidebar-foreground: 210 20% 75%;
+    --sidebar-primary: 38 92% 50%;
+    --sidebar-primary-foreground: 220 20% 10%;
+    --sidebar-accent: 220 16% 14%;
+    --sidebar-accent-foreground: 210 20% 92%;
+    --sidebar-border: 220 14% 16%;
+    --sidebar-ring: 38 92% 50%;
+
+    /* Custom FleetFlow tokens */
+    --status-available: 142 71% 45%;
+    --status-on-trip: 200 80% 55%;
+    --status-in-shop: 38 92% 50%;
+    --status-retired: 0 72% 51%;
+    --status-off-duty: 215 15% 55%;
+
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(38 92% 50%),
+      hsl(28 90% 45%)
+    );
+    --gradient-card: linear-gradient(
+      145deg,
+      hsl(220 18% 14%),
+      hsl(220 18% 11%)
+    );
+    --gradient-sidebar: linear-gradient(
+      180deg,
+      hsl(220 20% 8%),
+      hsl(220 22% 6%)
+    );
+
+    --shadow-card: 0 4px 24px -4px hsla(0 0% 0% / 0.4);
+    --shadow-glow: 0 0 20px -5px hsla(38 92% 50% / 0.15);
   }
-  a:hover {
-    color: #747bff;
+}
+
+@layer base {
+  * {
+    @apply border-border;
   }
-  button {
-    background-color: #f9f9f9;
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family:
+      "Space Grotesk",
+      system-ui,
+      -apple-system,
+      sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Space Grotesk", system-ui, sans-serif;
+    @apply tracking-tight;
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    background: linear-gradient(
+      145deg,
+      hsla(220, 18%, 14%, 0.8),
+      hsla(220, 18%, 11%, 0.6)
+    );
+    backdrop-filter: blur(12px);
+    border: 1px solid hsla(220, 14%, 24%, 0.5);
+  }
+
+  .status-pill {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .status-available {
+    background: hsla(142, 71%, 45%, 0.15);
+    color: hsl(142, 71%, 55%);
+  }
+
+  .status-on-trip {
+    background: hsla(200, 80%, 55%, 0.15);
+    color: hsl(200, 80%, 65%);
+  }
+
+  .status-in-shop {
+    background: hsla(38, 92%, 50%, 0.15);
+    color: hsl(38, 92%, 60%);
+  }
+
+  .status-retired {
+    background: hsla(0, 72%, 51%, 0.15);
+    color: hsl(0, 72%, 61%);
+  }
+
+  .status-off-duty {
+    background: hsla(215, 15%, 55%, 0.15);
+    color: hsl(215, 15%, 65%);
+  }
+
+  .kpi-card {
+    @apply glass-card rounded-xl p-5 transition-all duration-300;
+  }
+
+  .kpi-card:hover {
+    box-shadow: var(--shadow-glow);
+    border-color: hsla(38, 92%, 50%, 0.2);
   }
 }
