@@ -1,17 +1,45 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Truck, Mail, Lock, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [role, setRole] = useState<"manager" | "dispatcher">("manager");
+  const { login } = useAuth();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/dashboard");
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Logged in successfully!");
+        login(data);
+        navigate("/dashboard");
+      } else {
+        toast.error(data.message || "Login failed");
+      }
+    } catch (error) {
+      toast.error("An error occurred during login");
+    }
   };
 
   return (
@@ -62,23 +90,6 @@ const Login = () => {
             <p className="mt-2 text-muted-foreground">Sign in to your fleet management dashboard</p>
           </div>
 
-          {/* Role selector */}
-          <div className="flex rounded-lg border border-border p-1">
-            {(["manager", "dispatcher"] as const).map((r) => (
-              <button
-                key={r}
-                onClick={() => setRole(r)}
-                className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-all ${
-                  role === r
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {r === "manager" ? "Fleet Manager" : "Dispatcher"}
-              </button>
-            ))}
-          </div>
-
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -89,7 +100,8 @@ const Login = () => {
                   type="email"
                   placeholder="you@fleetflow.com"
                   className="pl-10 bg-secondary border-border"
-                  defaultValue="admin@fleetflow.com"
+                  onChange={handleChange}
+                  required
                 />
               </div>
             </div>
@@ -107,7 +119,8 @@ const Login = () => {
                   type="password"
                   placeholder="••••••••"
                   className="pl-10 bg-secondary border-border"
-                  defaultValue="password"
+                  onChange={handleChange}
+                  required
                 />
               </div>
             </div>
@@ -115,6 +128,13 @@ const Login = () => {
               Sign In <ArrowRight className="h-4 w-4" />
             </Button>
           </form>
+
+          <p className="text-center text-sm text-muted-foreground">
+            Don't have an account?{" "}
+            <Link to="/signup" className="text-primary hover:underline font-medium">
+              Create Account
+            </Link>
+          </p>
         </div>
       </div>
     </div>
