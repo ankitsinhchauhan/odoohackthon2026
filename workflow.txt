@@ -1,0 +1,68 @@
+# FleetFlow - Comprehensive Operational Workflow & Setup Guide
+
+This document outlines the complete business logic, technical setup, and administrative workflows for the FleetFlow Modular Fleet & Logistics Management System.
+
+## 1. Technical Infrastructure & Setup
+1.  **Architecture**: 
+    - **Frontend**: React + Vite (Port 5173).
+    - **Backend**: Node.js + Express (Port 5000).
+    - **Database**: SQLite (Relational storage in `server/fleetflow.db`).
+2.  **Installation**:
+    - Root: `npm install`
+    - Server: `cd server && npm install`
+3.  **Execution**:
+    - Start API: `cd server && node index.js`
+    - Start UI: `npm run dev`
+4.  **Security**: 
+    - Passwords hashed using **BcryptJS**.
+    - Session management via **JWT Tokens**.
+
+## 2. Access control & Authentication
+1.  **Account Creation**: 
+    - Public: New users can Sign Up from the landing page.
+    - Admin: Managers can manually register new users via the Administration Hub.
+2.  **Default Credentials**:
+    - Email: `admin@fleetflow.com` | Password: `admin123`
+3.  **Role-Based Access Control (RBAC)**:
+    - **Manager**: Universal power; Full CRUD for assets, users, and financials.
+    - **Dispatcher**: Fleet visibility and Trip Dispatching; cannot add assets or users.
+    - **Safety Officer**: Driver compliance and Safety Score monitoring.
+    - **Analyst**: Access to Financial logs and Analytics; restricted from fleet operations.
+
+## 3. Core Business Workflows
+
+### A. Asset Management (Manager Only)
+1.  Navigate to **Vehicle Registry**.
+2.  **Create**: Click "Add Vehicle" to register new trucks/vans.
+3.  **Monitor**: Real-time tracking of Odometer, Region, and current Status.
+
+### B. Intelligent Dispatch Cycle (Dispatcher/Manager)
+1.  Navigate to **Trip Dispatcher**.
+2.  **Constraint Check**: System validates Cargo Weight against Vehicle Capacity.
+3.  **Atomic Update**: On successful dispatch, the backend performs a transaction:
+    - Creates a dynamic Trip record.
+    - Atomically flips Vehicle status to "On Trip".
+    - Atomically flips Driver status to "On Trip".
+
+### C. Maintenance & grounding (Safety Officer/Manager)
+1.  Log service events (Repairs, Inspections) in **Maintenance Hub**.
+2.  **Automatic Grounding**: Logging a maintenance entry automatically sets the vehicle status to "In Shop", removing it from the Dispatchers' available pool.
+
+### D. Financial & Operational Analytics (Analyst/Manager)
+1.  Log operational costs (Fuel, Parts) in **Expenses**.
+2.  View **Analytics Dashboard** for:
+    - **Revenue vs Cost** trends.
+    - **Capacity Utilization** (Weight Efficiency).
+    - **Fleet Health** distribution.
+
+### E. Advanced Administration (Manager Only)
+1.  Navigate to **Administration Hub**.
+    - **Full Registry**: View all system users, emails, and roles.
+    - **Direct Editing**: Change User Names, Emails, and Roles on-the-fly.
+    - **Forced Registration**: Manually add new team members with secure credentials.
+    - **Access Locking**: Built-in protection prevents accidental admin lockout.
+
+## 4. Key Logic & Integrity Rules
+- **Data Persistence**: All changes are written to SQLite, surviving server restarts.
+- **Relational Integrity**: Deleting/Changing assets maintains link to historical cost data.
+- **Validation**: Strict front-end and back-end checks prevent overloading or invalid status flows.
