@@ -10,3 +10,7 @@ client/.env
 server/.env
 client/dist/
 server/dist/
+node_modules
+.env
+dist
+build

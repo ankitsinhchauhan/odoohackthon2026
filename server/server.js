@@ -1,11 +1,9 @@
-// server.js
-
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 
-// Load env variables FIRST
+// Load env variables
 dotenv.config();
 
 // Connect Database
@@ -15,7 +13,6 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-
 app.use(
   cors({
     origin: ["http://localhost:8080", "http://localhost:5173"],
